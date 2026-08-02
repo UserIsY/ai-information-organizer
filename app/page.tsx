@@ -27,8 +27,11 @@ export default function Home() {
 
   const data = await response.json();
 
-
-  setResult(data.result);
+  if (data.result) {
+    setResult(data.result);
+  } else {
+    setResult(data.error || "Something went wrong.");
+  }
 
 }
 
@@ -72,9 +75,15 @@ export default function Home() {
       <div style={{ marginTop: 30 }}>
         <h2>Result</h2>
 
-        <p>
+        <div
+          style={{
+           whiteSpace: "pre-wrap",
+           marginTop: 10,
+           }}
+        >
           {result || "Waiting for analysis..."}
-        </p>
+
+        </div>
       </div>
     </div>
   );
