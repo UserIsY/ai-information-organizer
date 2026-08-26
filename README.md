@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Information Organizer
+
+An AI-powered tool that turns messy notes into clear, actionable daily tasks.
+
+## Demo
+
+Try the live demo:
+
+https://ai-information-organizer.vercel.app/
+
+## Overview
+
+AI Information Organizer helps you transform unstructured notes, thoughts, and reminders into a focused list of actionable tasks.
+
+Instead of manually organizing scattered information from different places, simply paste your notes and let AI extract the tasks that matter today.
+
+## Features
+
+- Paste messy text notes
+- AI extracts today's actionable tasks
+- Converts unstructured information into a clear task list
+- Simple and focused MVP experience
+
+## How It Works
+
+1. Paste your notes into the input box
+2. Click "Analyze"
+3. AI organizes the information into today's actionable tasks
+
+## Tech Stack
+
+- Next.js
+- TypeScript
+- DeepSeek API
+
+## Project Structure
+
+```
+app/  
+├── api/  
+│ └── analyze/  
+│ └── route.ts  
+├── page.tsx
+```
 
 ## Getting Started
 
-First, run the development server:
+### Clone the repository
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+git clone https://github.com/UserIsY/ai-information-organizer.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install dependencies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Environment Variables
 
-## Learn More
+Create a `.env.local` file in the project root:
 
-To learn more about Next.js, take a look at the following resources:
+```
+DEEPSEEK_API_KEY=your_api_key
+SYSTEM_PROMPT=your_system_prompt
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Run locally
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Start the development server:
 
-## Deploy on Vercel
+```
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Open:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+http://localhost:3000
+```
+
+## Feedback
+
+Have suggestions or found a bug?
+
+Please open an issue in this repository.
+
+## Future Improvements
+
+Possible improvements:
+
+- Save temporary notes before analysis
+- Add task completion tracking
+- Improve AI output customization
+- Add more feedback-driven improvements
+
+## License
+
+MIT

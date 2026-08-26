@@ -72,6 +72,23 @@ export default function Home() {
         Analyze
       </button>
 
+    <a
+       href="https://github.com/UserIsY/ai-information-organizer/issues"
+       target="_blank"
+       style={{
+       display: "inline-block",
+       marginTop: 20,
+       marginLeft: 10,
+       padding: "10px 20px",
+       border: "1px solid #ccc",
+       borderRadius: 8,
+       textDecoration: "none",
+       color: "black",
+       }}
+    >
+      Feedback
+    </a>
+
       <div style={{ marginTop: 30 }}>
         <h2>Result</h2>
 
