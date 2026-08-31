@@ -1,25 +1,12 @@
-# AI Information Organizer
+# ClearDay
 
-An AI-powered tool that turns messy notes into clear, actionable daily tasks.
+A clean and focused tool to turn messy information into actionable daily tasks.
 
 ## Demo
 
 Try the live demo:
 
-https://ai-information-organizer.vercel.app/
-
-## Overview
-
-AI Information Organizer helps you transform unstructured notes, thoughts, and reminders into a focused list of actionable tasks.
-
-Instead of manually organizing scattered information from different places, simply paste your notes and let AI extract the tasks that matter today.
-
-## Features
-
-- Paste messy text notes
-- AI extracts today's actionable tasks
-- Converts unstructured information into a clear task list
-- Simple and focused MVP experience
+https://clearday.vercel.app/
 
 ## How It Works
 
@@ -48,7 +35,7 @@ app/
 ### Clone the repository
 
 ```
-git clone https://github.com/UserIsY/ai-information-organizer.git
+git clone https://github.com/UserIsY/clearday.git
 ```
 
 ### Install dependencies
@@ -93,7 +80,6 @@ Possible improvements:
 - Save temporary notes before analysis
 - Add task completion tracking
 - Improve AI output customization
-- Add more feedback-driven improvements
 
 ## License
 
