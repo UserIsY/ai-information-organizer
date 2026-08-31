@@ -1,4 +1,4 @@
-# ClearDay
+# ClearDayline
 
 A clean and focused tool to turn messy information into actionable daily tasks.
 
@@ -6,7 +6,7 @@ A clean and focused tool to turn messy information into actionable daily tasks.
 
 Try the live demo:
 
-https://ai-information-organizer.vercel.app/
+https://cleardayline.vercel.app/
 
 ## How It Works
 
@@ -35,7 +35,7 @@ app/
 ### Clone the repository
 
 ```
-git clone https://github.com/UserIsY/clearday.git
+git clone https://github.com/UserIsY/ClearDayline.git
 ```
 
 ### Install dependencies
