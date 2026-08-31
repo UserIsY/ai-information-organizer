@@ -6,7 +6,7 @@ A clean and focused tool to turn messy information into actionable daily tasks.
 
 Try the live demo:
 
-https://clearday.vercel.app/
+https://ai-information-organizer.vercel.app/
 
 ## How It Works
 
