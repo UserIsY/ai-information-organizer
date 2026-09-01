@@ -197,19 +197,45 @@ export default function Home() {
           maxWidth: 1400,
           margin: "0 auto",
         }}
-      >
-        <h1 style={{ fontSize: 32, fontWeight: "bold" }}>
-          AI Information Organizer
-        </h1>
+      > 
+
+      <div
+        style={{
+         display: "flex",
+         justifyContent: "space-between",
+         alignItems: "center",
+        }}
+>
+       <h1 style={{ fontSize: 32, fontWeight: "bold", margin: 0 }}>
+          ClearDayline
+       </h1>
+
+       <a
+          href="https://github.com/UserIsY/ClearDayline/issues"
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            padding: "8px 16px",
+            border: "1px solid #ccc",
+            borderRadius: 8,
+            textDecoration: "none",
+            color: "black",
+            background: "white",
+            fontSize: 14,
+          }}
+        >
+         Send Feedback
+       </a>
+      </div>
 
         <p style={{ marginTop: 10, color: "#666" }}>
-          A clean and focused way to turn messy information into today's actionable list.
+          A clean and focused tool to turn messy information into actionable daily tasks.
         </p>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1.5fr 1fr",
+            gridTemplateColumns: "1fr 1fr 1fr",
             gap: 24,
             marginTop: 30,
             alignItems: "start",
@@ -275,18 +301,21 @@ export default function Home() {
                   notes.length >= MAX_NOTES || !newNote.trim()
                 }
                 style={{
-                  padding: "8px 14px",
-                  background:
-                    notes.length >= MAX_NOTES || !newNote.trim()
-                      ? "#ccc"
-                      : "black",
-                  color: "white",
-                  border: "none",
-                  borderRadius: 8,
-                  cursor:
-                    notes.length >= MAX_NOTES || !newNote.trim()
-                      ? "not-allowed"
-                      : "pointer",
+                   padding: "8px 14px",
+                   background:
+                     notes.length >= MAX_NOTES || !newNote.trim()
+                       ? "#e5e5e5"
+                       : "black",
+                   color:
+                     notes.length >= MAX_NOTES || !newNote.trim()
+                       ? "#999"
+                       : "white",
+                   border: "none",
+                   borderRadius: 8,
+                   cursor:
+                      notes.length >= MAX_NOTES || !newNote.trim()
+                         ? "not-allowed"
+                         : "pointer",
                 }}
               >
                 Add Note
@@ -295,9 +324,14 @@ export default function Home() {
 
             <div style={{ marginTop: 20 }}>
               {notes.length === 0 ? (
-                <p style={{ color: "#999", fontSize: 14 }}>
-                  Your saved notes will appear here.
-                </p>
+               <>
+                 <p style={{ color: "#999", fontSize: 14 }}>
+                   Your saved notes will appear here.
+                 </p>
+                 <small style={{ color: "#999" }}>
+                   Saved locally in your browser.
+                 </small>
+               </>
               ) : (
                 notes.map((note) => (
                   <div
@@ -348,7 +382,7 @@ export default function Home() {
             </div>
           </section>
 
-          {/* CENTER: AI Organizer */}
+          {/* CENTER: Task Preview */}
           <section
             style={{
               background: "white",
@@ -365,43 +399,11 @@ export default function Home() {
               }}
             >
               <h2 style={{ fontSize: 20, fontWeight: "bold" }}>
-                AI Organizer
+                Task Preview
               </h2>
-
-              <span style={{ fontSize: 13, color: "#666" }}>
-                {MAX_ANALYSES - analysesUsed} / {MAX_ANALYSES} analyses
-                remaining
-              </span>
             </div>
 
-            <button
-              onClick={analyzeNotes}
-              disabled={isAnalyzing || analysesUsed >= MAX_ANALYSES}
-              style={{
-                width: "100%",
-                marginTop: 20,
-                padding: "12px 20px",
-                background:
-                  isAnalyzing || analysesUsed >= MAX_ANALYSES
-                    ? "#ccc"
-                    : "black",
-                color: "white",
-                border: "none",
-                borderRadius: 8,
-                cursor:
-                  isAnalyzing || analysesUsed >= MAX_ANALYSES
-                    ? "not-allowed"
-                    : "pointer",
-                fontSize: 15,
-              }}
-            >
-              {isAnalyzing ? "Analyzing..." : "Analyze"}
-            </button>
-
             <div style={{ marginTop: 30 }}>
-              <h3 style={{ fontSize: 17, fontWeight: "bold" }}>
-                AI Result
-              </h3>
 
               <div
                 style={{
@@ -415,30 +417,50 @@ export default function Home() {
                   lineHeight: 1.6,
                 }}
               >
-                {result || "Your AI-generated plan will appear here."}
+                {result || "Today's tasks generated from your notes will appear here."}
               </div>
 
-              {result &&
-                result !== "Analyzing..." &&
-                !result.includes("limit") && (
-                  <button
-                    onClick={adoptPlan}
-                    style={{
-                      width: "100%",
-                      marginTop: 15,
-                      padding: "11px 20px",
-                      background: "white",
-                      color: "black",
-                      border: "1px solid black",
-                      borderRadius: 8,
-                      cursor: "pointer",
-                      fontSize: 15,
-                    }}
-                  >
-                    Adopt this plan
-                  </button>
-                )}
             </div>
+
+            <div
+              style={{
+                display:"flex",
+                alignItems:"center",
+                gap:12,
+                marginTop:20,
+               }}
+            >
+              <button
+                 onClick={analyzeNotes}
+                 disabled={isAnalyzing || analysesUsed >= MAX_ANALYSES}
+                 style={{
+                   padding:"12px 20px",
+                   background:
+                      isAnalyzing || analysesUsed >= MAX_ANALYSES
+                        ? "#ccc"
+                        : "black",
+                   color:"white",
+                   border:"none",
+                   borderRadius:8,
+                   cursor:
+                     isAnalyzing || analysesUsed >= MAX_ANALYSES
+                     ? "not-allowed"
+                     : "pointer",
+                  }}
+              >
+                {isAnalyzing ? "Analyzing..." : "AI Analyze"}
+              </button>
+
+              <span
+                style={{
+                 fontSize:13,
+                 color:"#666",
+                }}
+              >
+                {MAX_ANALYSES - analysesUsed} / {MAX_ANALYSES} left today
+              </span>
+            </div>
+
           </section>
 
           {/* RIGHT: Today's Tasks */}
@@ -454,10 +476,45 @@ export default function Home() {
               Today's Tasks
             </h2>
 
+            <button
+             onClick={adoptPlan}
+             disabled={
+               !result ||
+               result === "Analyzing..." ||
+               result.includes("limit")
+              }
+             style={{
+                marginTop: 15,
+                padding: "11px 20px",
+                background:
+                  !result ||
+                  result === "Analyzing..." ||
+                  result.includes("limit")
+                    ? "#e5e5e5"
+                    : "black",
+                color:
+                 !result ||
+                 result === "Analyzing..." ||
+                 result.includes("limit")
+                    ? "#999"
+                   : "white",
+                border: "none",
+                borderRadius: 8,
+                cursor:
+                  !result ||
+                  result === "Analyzing..." ||
+                  result.includes("limit")
+                     ? "not-allowed"
+                     : "pointer",
+              }}
+            >
+               Adopt Here
+            </button>
+
             <div style={{ marginTop: 20 }}>
               {tasks.length === 0 ? (
                 <p style={{ color: "#999", fontSize: 14 }}>
-                  Adopt an AI plan to add today's tasks.
+                  Adopt the tasks you prefer and add them here.
                 </p>
               ) : (
                 tasks.map((task) => (
@@ -498,24 +555,6 @@ export default function Home() {
           </section>
         </div>
 
-        <div style={{ marginTop: 30 }}>
-          <a
-            href="https://github.com/UserIsY/ai-information-organizer/issues"
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              display: "inline-block",
-              padding: "10px 20px",
-              border: "1px solid #ccc",
-              borderRadius: 8,
-              textDecoration: "none",
-              color: "black",
-              background: "white",
-            }}
-          >
-            Feedback
-          </a>
-        </div>
       </div>
     </main>
   );
