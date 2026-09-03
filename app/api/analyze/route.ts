@@ -11,7 +11,7 @@ const requestMap = new Map<
 
 const apiKey = process.env.AI_API_KEY;
 const baseURL = process.env.AI_BASE_URL;
-const model = process.env.AI_MODEL;
+const model = process.env.AI_MODEL || "deepseek-v4-flash";
 
 console.log("API KEY CHECK:", apiKey?.slice(0, 12));
 console.log("BASE URL:", baseURL);
