@@ -1,11 +1,29 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
-const requestMap = new Map<string, number>();
+const requestMap = new Map<
+  string,
+  {
+    count: number;
+    date: string;
+  }
+>();
+
+const apiKey = process.env.AI_API_KEY;
+const baseURL = process.env.AI_BASE_URL;
+const model = process.env.AI_MODEL;
+
+console.log("API KEY CHECK:", apiKey?.slice(0, 12));
+console.log("BASE URL:", baseURL);
+console.log("MODEL:", model);
+
+if (!apiKey || !baseURL || !model) {
+  throw new Error("AI configuration is missing");
+}
 
 const client = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY,
-  baseURL: "https://api.deepseek.com",
+  apiKey,
+  baseURL,
 });
 
 
@@ -14,84 +32,118 @@ export async function POST(request: Request) {
   try {
 
     const ip =
-      request.headers.get("x-forwarded-for") || "unknown";
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      "unknown";
 
 
-    const lastRequest = requestMap.get(ip);
+    const today = new Date().toDateString();
+
+const userRecord = requestMap.get(ip);
 
 
-    if (
-      lastRequest &&
-      Date.now() - lastRequest < 30000
-    ) {
-      return NextResponse.json(
-        {
-          error:"Please wait before trying again."
-        },
-        {
-          status:429
-        }
-      );
+if (
+  userRecord &&
+  userRecord.date === today &&
+  userRecord.count >= 10
+) {
+  return NextResponse.json(
+    {
+      error: "You've reached today's analysis limit."
+    },
+    {
+      status: 429
     }
+  );
+}
 
-    requestMap.set(
-      ip,
-      Date.now()
-    );
+
+if (!userRecord || userRecord.date !== today) {
+  requestMap.set(ip, {
+    count: 1,
+    date: today,
+  });
+} else {
+  requestMap.set(ip, {
+    count: userRecord.count + 1,
+    date: today,
+  });
+}
+
 
     const body = await request.json();
 
     const notes = body.text;
 
+
     if (!notes || notes.length > 5000) {
-  return NextResponse.json(
-    {
-      error: "Input is too long. Please keep it under 5000 characters.",
-    },
-    {
-      status: 400,
+      return NextResponse.json(
+        {
+          error:
+            "Input is too long. Please keep it under 5000 characters.",
+        },
+        {
+          status: 400,
+        }
+      );
     }
-  );
-}
+
 
     const systemPrompt = process.env.SYSTEM_PROMPT;
 
+
     if (!systemPrompt) {
-  throw new Error("SYSTEM_PROMPT is missing");
-}
+      throw new Error("SYSTEM_PROMPT is missing");
+    }
+
 
     const response = await client.chat.completions.create({
 
-     model: "deepseek-v4-flash",
+      model,
 
-     max_tokens: 1000,
+      temperature: 0,
+      max_tokens: 600,
 
-  messages:[
- {
-  role:"system",
-  content:systemPrompt
- },
-  {
-    role: "user",
-    content: notes,
-  },
-],
+      messages: [
+        {
+          role: "system",
+          content: systemPrompt,
+        },
+        {
+          role: "user",
+          content:`Extract tasks from these notes. Output the task list only. Do not include analysis. \n\n${notes}`,
+        },
+      ],
 
     });
 
 
-    const result =
-      response.choices[0].message.content;
+const message = response.choices?.[0]?.message;
 
+console.log("MESSAGE:", message);
+
+const result =
+  message?.content ||
+  message?.reasoning_content ||
+  "";
+
+const cleaned = result.match(/### High Priority[\s\S]*?### End/);
+const finalResult = cleaned ? cleaned[0] : result;
+
+console.log("AI RESULT:", finalResult);
+
+if (!finalResult) {
+  throw new Error("Empty AI response");
+}
 
     return NextResponse.json({
-      result,
+      result: finalResult,
     });
 
 
   } catch (error) {
 
     console.error(error);
+
 
     return NextResponse.json(
       {

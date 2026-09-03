@@ -13,7 +13,9 @@ type Note = {
 
 type Task = {
   id: number;
-  text: string;
+  title: string;
+  nextAction: string;
+  priority: "High Priority" | "Important" | "Later";
   completed: boolean;
 };
 
@@ -40,9 +42,19 @@ export default function Home() {
       setNotes(JSON.parse(savedNotes));
     }
 
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
+if (savedTasks) {
+  const parsedTasks = JSON.parse(savedTasks);
+
+  setTasks(
+    parsedTasks.map((task: any) => ({
+      id: task.id,
+      title: task.title || task.text || "",
+      nextAction: task.nextAction || "",
+      priority: task.priority || "Later",
+      completed: task.completed || false,
+    }))
+  );
+}
 
     // Reset analysis count when the day changes
     if (savedDate === today && savedAnalyses) {
@@ -131,13 +143,13 @@ export default function Home() {
 
       const data = await response.json();
 
-      setAnalysesUsed((prev) => prev + 1);
-
-      if (data.result) {
-        setResult(data.result);
-      } else {
-        setResult(data.error || "Something went wrong.");
-      }
+       console.log("API RESPONSE:", data);
+       if (data.result) {
+         setAnalysesUsed((prev) => prev + 1);
+         setResult(data.result);
+       } else {
+          setResult(data.error || "Something went wrong.");
+        }
     } catch (error) {
       setResult("Something went wrong. Please try again.");
     } finally {
@@ -145,34 +157,65 @@ export default function Home() {
     }
   }
 
-  function adoptPlan() {
-    if (!result || result === "Analyzing...") {
-      return;
+function adoptPlan() {
+  if (!result || result === "Analyzing...") {
+    return;
+  }
+
+  const lines = result.split("\n");
+
+  let currentPriority:
+    | "High Priority"
+    | "Important"
+    | "Later" = "Later";
+
+  const newTasks: Task[] = [];
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+
+    if (line === "### High Priority") {
+      currentPriority = "High Priority";
+      continue;
     }
 
-    // Convert each non-empty line into a task
-    const newTasks = result
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0)
-      .map((line) => {
-        // Remove common markdown bullets / checkbox symbols
-        const cleanText = line
-          .replace(/^[-*•]\s*/, "")
-          .replace(/^\d+[.)]\s*/, "")
-          .replace(/^\[[ xX]\]\s*/, "")
-          .trim();
+    if (line === "### Important") {
+      currentPriority = "Important";
+      continue;
+    }
 
-        return {
-          id: Date.now() + Math.random(),
-          text: cleanText,
-          completed: false,
-        };
-      })
-      .filter((task) => task.text.length > 0);
+    if (line === "### Later") {
+      currentPriority = "Later";
+      continue;
+    }
 
-    setTasks(newTasks);
+
+    if (line.startsWith("- ")) {
+
+      const title = line.replace("- ", "").trim();
+
+      const nextLine = lines[i + 1]?.trim() || "";
+
+      const nextAction = nextLine.startsWith("Next action:")
+         ? nextLine.replace("Next action:", "").trim()
+         : "Start this task.";
+
+
+      newTasks.push({
+        id: Date.now() + Math.random(),
+        title,
+        nextAction,
+        priority: currentPriority,
+        completed: false,
+      });
+    }
   }
+
+      setTasks((prev) => [
+        ...prev,
+        ...newTasks,
+      ]);
+}
 
   function toggleTask(id: number) {
     setTasks((prev) =>
@@ -512,46 +555,101 @@ export default function Home() {
             </button>
 
             <div style={{ marginTop: 20 }}>
-              {tasks.length === 0 ? (
-                <p style={{ color: "#999", fontSize: 14 }}>
-                  Adopt the tasks you prefer and add them here.
-                </p>
-              ) : (
-                tasks.map((task) => (
-                  <label
-                    key={task.id}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: 10,
-                      padding: "10px 0",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={task.completed}
-                      onChange={() => toggleTask(task.id)}
-                      style={{
-                        marginTop: 4,
-                      }}
-                    />
 
-                    <span
-                      style={{
-                        lineHeight: 1.5,
-                        color: task.completed ? "#999" : "#111",
-                        textDecoration: task.completed
-                          ? "line-through"
-                          : "none",
-                      }}
-                    >
-                      {task.text}
-                    </span>
-                  </label>
-                ))
-              )}
-            </div>
+  {tasks.length === 0 ? (
+
+    <p style={{ color: "#999", fontSize: 14 }}>
+      Adopt the tasks you prefer and add them here.
+    </p>
+
+  ) : (
+
+    ["High Priority", "Important", "Later"].map((priority) => (
+
+      <div
+        key={priority}
+        style={{
+          marginBottom: 20,
+        }}
+      >
+
+        <h3
+          style={{
+            fontSize: 15,
+            fontWeight: "bold",
+            marginBottom: 10,
+          }}
+        >
+          {priority}
+        </h3>
+
+
+        {tasks
+          .filter((task) => task.priority === priority)
+          .map((task) => (
+
+            <label
+              key={task.id}
+              style={{
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 10,
+                padding: "10px 0",
+                cursor: "pointer",
+              }}
+            >
+
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => toggleTask(task.id)}
+                style={{
+                  marginTop: 4,
+                }}
+              />
+
+
+              <div>
+
+                <div
+                  style={{
+                    lineHeight: 1.5,
+                    color: task.completed
+                      ? "#999"
+                      : "#111",
+                    textDecoration: task.completed
+                      ? "line-through"
+                      : "none",
+                  }}
+                >
+                  {task.title}
+                </div>
+
+
+                <div
+                  style={{
+                    fontSize: 13,
+                    color: "#777",
+                    marginTop: 4,
+                  }}
+                >
+                  Next action: {task.nextAction}
+                </div>
+
+
+              </div>
+
+            </label>
+
+            ))}
+
+           </div>
+
+           ))
+
+          )}
+
+        </div>
           </section>
         </div>
 
