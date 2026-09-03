@@ -123,7 +123,7 @@ console.log("MESSAGE:", message);
 
 const result =
   message?.content ||
-  message?.reasoning_content ||
+  (message as any)?.reasoning_content ||
   "";
 
 const cleaned = result.match(/### High Priority[\s\S]*?### End/);
